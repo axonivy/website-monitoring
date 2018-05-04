@@ -9,12 +9,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.assertj.core.api.Assertions;
+
+import jdk.incubator.http.HttpClient;
+import jdk.incubator.http.HttpClient.Redirect;
+import jdk.incubator.http.HttpRequest.BodyPublisher;
+import jdk.incubator.http.HttpRequest;
+import jdk.incubator.http.HttpResponse;
+import jdk.incubator.http.HttpResponse.BodyHandler;
 
 public class HttpAsserter
 {
@@ -44,20 +46,14 @@ public class HttpAsserter
     
     public void exists()
     {
-      Assertions.assertThat(getResponse(url).getStatusLine().getStatusCode()).isEqualTo(200);
+      Assertions.assertThat(getResponse(url).statusCode()).isEqualTo(200);
     }
 
     private static void assertRedirect(String requestUrl, String redirectUrl, int statusCode)
     {
-      try (CloseableHttpResponse response = getResponse(requestUrl))
-      {
-        Assertions.assertThat(response.getStatusLine().getStatusCode()).isEqualTo(statusCode);
-        Assertions.assertThat(response.getFirstHeader("Location").getValue()).isEqualTo(redirectUrl);
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
+    	HttpResponse<String> response = getResponse(requestUrl);
+        Assertions.assertThat(response.statusCode()).isEqualTo(statusCode);
+        Assertions.assertThat(response.headers().firstValue("Location").get()).isEqualTo(redirectUrl);
     }
 
     public void bodyContains(String ... substringOfBody)
@@ -66,44 +62,45 @@ public class HttpAsserter
       Assertions.assertThat(content).contains(substringOfBody);
     }
 
-    private static CloseableHttpResponse getResponse(String url)
+    private static HttpResponse<String> getResponse(String url)
     {
-      try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableCookieManagement().disableRedirectHandling().build())
-      {
-        URI uri = new URL(url).toURI();
-        return httpClient.execute(new HttpGet(uri));
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
-    }
-
-    private static CloseableHttpResponse getResponseWithRedirecting(String url)
-    {
-      try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableCookieManagement().build())
-      {
-        URI uri = new URL(url).toURI();
-        return httpClient.execute(new HttpGet(uri));
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
+    	return getResponse(url, false);
     }
     
-    private static String getContent(String url)
+    private static HttpResponse<String> getResponseFollowRedirects(String url)
     {
-      try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableCookieManagement().build())
-      {
-        URI uri = new URL(url).toURI();
-        return httpClient.execute(new HttpGet(uri), new BasicResponseHandler());
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
+    	return getResponse(url, true);
     }
+
+    private static String getContent(String url) {
+    	try {
+    		System.out.println("Crawling: " + url);
+    		HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+			HttpResponse<String> response = client.send(request, BodyHandler.asString());
+			return response.body();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+    
+    private static HttpResponse<String> getResponse(String url, boolean followRedirects)
+    {
+    	try {
+    		System.out.println("Crawling: " + url);
+    		Redirect redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
+    		HttpClient client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
+			HttpRequest request = HttpRequest.newBuilder()
+					.method("HEAD", BodyPublisher.noBody())
+					.uri(URI.create(url))
+					.build();
+			HttpResponse<String> response = client.send(request, BodyHandler.discard(""));
+			return response;
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+    }
+		
 
     
     
@@ -138,7 +135,7 @@ public class HttpAsserter
     private static Set<String> getDeadLinks(Set<String> links)
     {
       return links.stream()
-              .filter(link -> getResponseWithRedirecting(link).getStatusLine().getStatusCode() != 200)
+              .filter(link -> getResponseFollowRedirects(link).statusCode() != 200)
               .collect(Collectors.toSet());
     }
     

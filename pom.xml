@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ivyteam.webpage</groupId>
-	<artifactId>developer.axonivy.com.test</artifactId>
+	<artifactId>ivy-website-monitoring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
+		<java.version>10</java.version>
 		<junit.version>5.2.0</junit.version>
 	</properties>
 
@@ -21,6 +21,7 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<compilerArgument>--add-modules=jdk.incubator.httpclient</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -34,6 +35,9 @@
 						<version>1.2.0</version>
 					</dependency>
 				</dependencies>
+				<configuration>
+			    	<argLine>--add-modules=jdk.incubator.httpclient</argLine>
+			    </configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -54,15 +58,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.5</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.7</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
