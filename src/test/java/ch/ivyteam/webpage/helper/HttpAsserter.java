@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -13,8 +12,8 @@ import org.assertj.core.api.Assertions;
 
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpClient.Redirect;
-import jdk.incubator.http.HttpRequest.BodyPublisher;
 import jdk.incubator.http.HttpRequest;
+import jdk.incubator.http.HttpRequest.BodyPublisher;
 import jdk.incubator.http.HttpResponse;
 import jdk.incubator.http.HttpResponse.BodyHandler;
 
@@ -51,14 +50,14 @@ public class HttpAsserter
 
     private static void assertRedirect(String requestUrl, String redirectUrl, int statusCode)
     {
-    	HttpResponse<String> response = getResponse(requestUrl);
+    	var response = getResponse(requestUrl);
         Assertions.assertThat(response.statusCode()).isEqualTo(statusCode);
         Assertions.assertThat(response.headers().firstValue("Location").get()).isEqualTo(redirectUrl);
     }
 
     public void bodyContains(String ... substringOfBody)
     {
-      String content = getContent(url);
+      var content = getContent(url);
       Assertions.assertThat(content).contains(substringOfBody);
     }
 
@@ -74,10 +73,10 @@ public class HttpAsserter
 
     private static String getContent(String url) {
     	try {
-    		System.out.println("Crawling: " + url);
-    		HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-			HttpResponse<String> response = client.send(request, BodyHandler.asString());
+    		System.out.println("Crawling (GET): " + url);
+    		var client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
+			var request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+			var response = client.send(request, BodyHandler.asString());
 			return response.body();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
@@ -87,15 +86,14 @@ public class HttpAsserter
     private static HttpResponse<String> getResponse(String url, boolean followRedirects)
     {
     	try {
-    		System.out.println("Crawling: " + url);
-    		Redirect redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
-    		HttpClient client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
-			HttpRequest request = HttpRequest.newBuilder()
+    		System.out.println("Crawling (HEAD): " + url);
+    		var redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
+    		var client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
+			var request = HttpRequest.newBuilder()
 					.method("HEAD", BodyPublisher.noBody())
 					.uri(URI.create(url))
 					.build();
-			HttpResponse<String> response = client.send(request, BodyHandler.discard(""));
-			return response;
+			return client.send(request, BodyHandler.discard(""));
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -112,13 +110,14 @@ public class HttpAsserter
     
     
     
-    private static final Set<String> DO_NOT_CHECK_LINKS_WHICH_CONTAINS = new HashSet<>();
-    static
-    {
-      DO_NOT_CHECK_LINKS_WHICH_CONTAINS.add("PublicAPI");
-      DO_NOT_CHECK_LINKS_WHICH_CONTAINS.add("primefaces.org");
-      DO_NOT_CHECK_LINKS_WHICH_CONTAINS.add("ch.linkedin.com");
-    }
+    private static final Set<String> DO_NOT_CHECK_LINKS_WHICH_CONTAINS = Set.of(
+    		"PublicAPI",
+    		"primefaces.org",
+    		"ch.linkedin.com");
+    private static final Set<String> DO_NOT_CHECK_LINK_WHICH_STARTS_WITH = Set.of(
+    		"mailto",
+    		"javascript",
+    		"org.eclipse.ui.window.preferences");
     
     public void hasNoDeadLinks()
     {
@@ -141,21 +140,19 @@ public class HttpAsserter
     
     private static Set<String> parseAllLinksOfPage(String baseUrl)
     {
-      final String HTML_A_TAG_PATTERN = "(?i)<a([^>]+)>";
-      final String HTML_A_HREF_TAG_PATTERN = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
-      Pattern PATTERN_TAG = Pattern.compile(HTML_A_TAG_PATTERN);
-      Pattern PATTERN_LINK = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
+      final var PATTERN_TAG = Pattern.compile("(?i)<a([^>]+)>");
+      final var PATTERN_LINK = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))");
       
-      String content = getContent(baseUrl);
-      Set<String> result = new HashSet<>();
-      Matcher matcherTag = PATTERN_TAG.matcher(content);
+      var content = getContent(baseUrl);
+      var result = new HashSet<String>();
+      var matcherTag = PATTERN_TAG.matcher(content);
       while (matcherTag.find())
       {
-        String href = matcherTag.group(1);
-        Matcher matcherLink = PATTERN_LINK.matcher(href);
+        var href = matcherTag.group(1);
+        var matcherLink = PATTERN_LINK.matcher(href);
         while (matcherLink.find())
         {
-          String link = matcherLink.group(1);
+          var link = matcherLink.group(1);
           link = StringUtils.substringBetween(link, "\"", "\"");
           link = StringUtils.substringBeforeLast(link, "#");
           
@@ -184,7 +181,7 @@ public class HttpAsserter
     {
       try
       {
-        URL javaURL = new URL(url);
+        var javaURL = new URL(url);
         return javaURL.getProtocol() + "://" + javaURL.getHost();
       }
       catch (Exception ex)
@@ -193,27 +190,20 @@ public class HttpAsserter
       }
     }
     
-    private static boolean ignoreLink(String link)
-    {
-      if (link.startsWith("mailto") 
-        || link.startsWith("javascript") 
-        || link.startsWith("org.eclipse.ui.window.preferences"))
-       {
-         return true;
-       }
-       if (link.isEmpty())
-       {
-         return true;
-       }
-       for (String ignoreLink : DO_NOT_CHECK_LINKS_WHICH_CONTAINS)
-       {
-         if (link.contains(ignoreLink))
-         {
-           return true;
-         }
-       }
-       return false;
-    }
+		private static boolean ignoreLink(String link) {
+			if (link.isEmpty()) {
+				return true;
+			}
+			if (DO_NOT_CHECK_LINK_WHICH_STARTS_WITH.stream().anyMatch(pattern -> link.startsWith(pattern))) {
+				return true;
+			}
+
+			if (DO_NOT_CHECK_LINKS_WHICH_CONTAINS.stream().anyMatch(pattern -> link.contains(pattern))) {
+				return true;
+			}
+
+			return false;
+		}
 
     public void hasValidSitemap()
     {
