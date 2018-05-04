@@ -14,9 +14,15 @@ class Test_file_axonivy_rocks
   @Test
   void checkOnline()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContains("Axon.ivy Update Sites");
+    HttpAsserter.assertThat(HTTPS + DOMAIN + "/p2/").bodyContains("Axon.ivy Update Sites");
   }
 
+  @Test
+  void redirect_home()
+  {
+    HttpAsserter.assertThat(HTTPS + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
+  }
+  
   @Test
   void redirect_https()
   {
