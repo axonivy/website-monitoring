@@ -53,6 +53,9 @@ public class TestDeveloperWebpageLinks
     DO_NOT_CHECK_LINKS_WHICH_CONTAINS.add("localhost:8080/ivy");
     DO_NOT_CHECK_LINKS_WHICH_CONTAINS.add("localhost:8081/ivy");
     
+    DO_NOT_CHECK_LINKS_WHICH_CONTAINS.add("ch.linkedin.com");
+    
+    
     // fixed with > 6.6 (61467634800000 = new Date(2017, 10, 1).getTime())
     if (new Date().getTime() < 61467634800000L)
     {
@@ -218,8 +221,7 @@ public class TestDeveloperWebpageLinks
 
   private static boolean existsUrl(String url)
   {
-    CloseableHttpClient httpClient = createClient();
-    try
+    try (CloseableHttpClient httpClient = createClient())
     {
       URI uri = new URI(url);
       HttpResponse response = httpClient.execute(new HttpGet(uri));
@@ -235,10 +237,6 @@ public class TestDeveloperWebpageLinks
       System.err.println(ex);
       ex.printStackTrace();
       return false;
-    }
-    finally
-    {
-      IOUtils.closeQuietly(httpClient);
     }
   }
 
