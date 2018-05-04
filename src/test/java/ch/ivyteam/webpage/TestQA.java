@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -13,35 +15,29 @@ import org.junit.Test;
 
 public class TestQA
 {
-  private static final String DOMAIN = "answers.axonivy.com";
-  private static final String ALTERNATE_DOMAIN = "answer.axonivy.com";
+  private static final String HTTP = "http://";
+  private static final String HTTPS = "https://";
+  
+  private static final String DOMAIN = "answers.axonivy.com/";
+  private static final String ALTERNATE_DOMAIN = "answer.axonivy.com/";
   
   @Test
   public void checkOnline()
   {
-    String content = getContent("https://" + DOMAIN);
+    String content = getContent(HTTP + DOMAIN);
     assertThat(content).contains("Ask a Question");
   }
   
   @Test
   public void redirect_https()
   {
-    String content = getContent("http://" + DOMAIN);
-    assertThat(content).contains("Ask a Question");
+    assertTemporaryRedirect(HTTP + DOMAIN, HTTPS + DOMAIN);
   }
  
   @Test
   public void redirect_alternateDomain_http()
   {
-    String content = getContent("http://" + ALTERNATE_DOMAIN);
-    assertThat(content).contains("Ask a Question");
-  }
-  
-  @Test
-  public void redirect_alternateDomain_https()
-  {
-    String content = getContent("https://" + ALTERNATE_DOMAIN);
-    assertThat(content).contains("Ask a Question");
+    assertPermanentRedirect(HTTP + ALTERNATE_DOMAIN, HTTP + DOMAIN);
   }
   
   private static String getContent(String url)
@@ -57,4 +53,41 @@ public class TestQA
     }
   }
   
+  private static CloseableHttpResponse getResponse(String url)
+  {
+    try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build())
+    {
+      URI uri = new URL(url).toURI();
+      return httpClient.execute(new HttpGet(uri));
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+  
+  private static void assertPermanentRedirect(String requestUrl, String redirectUrl)
+  {
+    assertRedirect(requestUrl, redirectUrl, 301);
+  }
+  
+  private static void assertTemporaryRedirect(String requestUrl, String redirectUrl)
+  {
+    assertRedirect(requestUrl, redirectUrl, 302);
+  }
+  
+  private static void assertRedirect(String requestUrl, String redirectUrl, int statusCode)
+  {
+    CloseableHttpResponse response = null;
+    try
+    {
+      response = getResponse(requestUrl);
+      assertThat(response.getStatusLine().getStatusCode()).isEqualTo(statusCode);
+      assertThat(response.getFirstHeader("Location").getValue()).isEqualTo(redirectUrl);
+    }
+    finally
+    {
+      IOUtils.closeQuietly(response);
+    }
+  }
 }
