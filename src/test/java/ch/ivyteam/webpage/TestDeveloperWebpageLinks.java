@@ -18,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -307,19 +306,14 @@ public class TestDeveloperWebpageLinks
 
   private static String getContent(String url)
   {
-    CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-    try
+    try (CloseableHttpClient httpClient = HttpClientBuilder.create().build())
     {
       URI uri = new URL(url).toURI();
       return httpClient.execute(new HttpGet(uri), new BasicResponseHandler());
     }
-    catch (URISyntaxException | IOException ex)
+    catch (Exception ex)
     {
-      throw new IllegalStateException(ex);
-    }
-    finally
-    {
-      IOUtils.closeQuietly(httpClient);
+      throw new RuntimeException(ex);
     }
   }
 }
