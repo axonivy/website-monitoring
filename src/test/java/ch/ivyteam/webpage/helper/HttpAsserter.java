@@ -86,11 +86,11 @@ public class HttpAsserter
     private static HttpResponse<String> getResponse(String url, boolean followRedirects)
     {
     	try {
-    		System.out.println("Crawling (HEAD): " + url);
+    		System.out.println("Crawling (GET - Drop Body): " + url);
     		var redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
     		var client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
 			var request = HttpRequest.newBuilder()
-					.method("HEAD", BodyPublisher.noBody())
+					.method("GET", BodyPublisher.noBody())
 					.uri(URI.create(url))
 					.build();
 			return client.send(request, BodyHandler.discard(""));
