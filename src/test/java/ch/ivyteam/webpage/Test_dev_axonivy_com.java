@@ -27,6 +27,14 @@ public class Test_dev_axonivy_com
     HttpAsserter.assertThat(HTTPS + DOMAIN ).hasNoDeadLinks();
   }
   
+  
+  
+	  @Test
+	  public void checkDeadlinks_onDownloadPa2ge()
+	  {
+	    HttpAsserter.assertThat("https://download.axonivy.com/7.0.4/AxonIvyEngine7.0.4.58124_Windows_x64.zip").exists();
+	  }
+	  
   @Test
   public void checkDeadlinks_onDownloadPage()
   {

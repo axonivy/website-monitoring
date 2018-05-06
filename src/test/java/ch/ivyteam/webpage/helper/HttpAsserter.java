@@ -79,23 +79,28 @@ public class HttpAsserter
 			var response = client.send(request, BodyHandler.asString());
 			return response.body();
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new RuntimeException("Could not crawl: " + url, ex);
 		}
 	}
     
     private static HttpResponse<String> getResponse(String url, boolean followRedirects)
     {
     	try {
-    		System.out.println("Crawling (GET - Drop Body): " + url);
+    		var method = "HEAD";
+    		if (url.contains("developer.axonivy.com")) {
+    			method = "GET";
+    		}
+    		System.out.println("Crawling ("+method+" - Drop Body): " + url);
+    		
     		var redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
     		var client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
 			var request = HttpRequest.newBuilder()
-					.method("GET", BodyPublisher.noBody())
+					.method(method, BodyPublisher.noBody())
 					.uri(URI.create(url))
 					.build();
 			return client.send(request, BodyHandler.discard(""));
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new RuntimeException("Could not crawl: " + url, ex);
 		}
     }
 		
