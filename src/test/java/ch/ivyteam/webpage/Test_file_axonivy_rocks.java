@@ -20,7 +20,7 @@ class Test_file_axonivy_rocks
   @Test
   void redirect_home()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).redirectsTemporaryTo(HTTPS + DOMAIN + "/p2/");
+    HttpAsserter.assertThat(HTTPS + DOMAIN).redirectsTemporaryTo("/p2/");
   }
   
   @Test
