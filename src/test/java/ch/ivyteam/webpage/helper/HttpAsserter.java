@@ -87,7 +87,7 @@ public class HttpAsserter
     {
     	try {
     		var method = "HEAD";
-    		if (url.contains("developer.axonivy.com")) {
+    		if (url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks")) {
     			method = "GET";
     		}
     		System.out.println("Crawling ("+method+" - Drop Body): " + url);
