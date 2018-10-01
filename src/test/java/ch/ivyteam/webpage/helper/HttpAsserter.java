@@ -86,7 +86,6 @@ public class HttpAsserter
     private static HttpResponse<String> getResponse(String url, boolean followRedirects)
     {
     	try {
-    	        Thread.sleep(500); // prevent GoAway Responses
     		var method = "HEAD";
     		if (url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks")) {
     			method = "GET";
