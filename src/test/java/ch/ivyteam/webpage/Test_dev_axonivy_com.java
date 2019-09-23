@@ -50,7 +50,7 @@ public class Test_dev_axonivy_com
   @Test
   public void checkDeadlinks_onDesignerGuidePage()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "doc/dev/DesignerGuideHtml/").hasNoDeadLinks();
+    HttpAsserter.assertThat(HTTPS + DOMAIN + "doc/dev/designer-guide/").hasNoDeadLinks();
   }
   
   @Test
