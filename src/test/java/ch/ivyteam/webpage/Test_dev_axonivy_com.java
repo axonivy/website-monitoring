@@ -18,7 +18,7 @@ public class Test_dev_axonivy_com
   @Test
   void apiCurrentRelease()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "api/currentRelease?releaseVersion=6.0.3").bodyContains("latestReleaseVersion", "latestServiceReleaseVersion", "6.0.");
+    HttpAsserter.assertThat(HTTPS + DOMAIN + "api/currentRelease?releaseVersion=6.0.3").bodyContains("latestReleaseVersion", "latestServiceReleaseVersion", "8.0.");
   }
   
   @Test
@@ -26,15 +26,19 @@ public class Test_dev_axonivy_com
   {
     HttpAsserter.assertThat(HTTPS + DOMAIN ).hasNoDeadLinks();
   }
-  
-  
-  
-	  @Test
-	  public void checkDeadlinks_onDownloadPa2ge()
-	  {
-	    HttpAsserter.assertThat("https://download.axonivy.com/7.0.4/AxonIvyEngine7.0.4.58124_Windows_x64.zip").exists();
-	  }
-	  
+
+  @Test
+  public void checkDeadlinks_artifactDownload()
+  {
+    HttpAsserter.assertThat("https://download.axonivy.com/7.0.4/AxonIvyEngine7.0.4.58124_Windows_x64.zip").exists();
+  }
+
+  @Test
+  public void checkDeadlinks_permalinkDebianPackage()
+  {
+    HttpAsserter.assertThat("https://developer.axonivy.com/permalink/8.0/axonivy-engine.deb").exists();
+  }
+
   @Test
   public void checkDeadlinks_onDownloadPage()
   {
