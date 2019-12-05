@@ -54,12 +54,13 @@ public class HttpAsserter
       Assertions.assertThat(response.headers().firstValue("Location").get()).isEqualTo(redirectUrl);
     }
 
-    public void redirectsTemporary()
+    public String redirectsTemporary()
     {
       var response = getResponse(url);
       Assertions.assertThat(response.statusCode()).isEqualTo(302);
+      return response.headers().firstValue("Location").get();
     }
-    
+
     public void bodyContains(String ... substringOfBody)
     {
       var content = getContent(url);

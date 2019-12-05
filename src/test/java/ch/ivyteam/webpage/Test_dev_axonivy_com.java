@@ -1,5 +1,7 @@
 package ch.ivyteam.webpage;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import ch.ivyteam.webpage.helper.HttpAsserter;
@@ -34,9 +36,10 @@ public class Test_dev_axonivy_com
   }
 
   @Test
-  public void checkDeadlinks_permalinkDebianPackage()
+  public void checkDeadlinks_permalinkDebianPackage_80()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "permalink/8.0/axonivy-engine.deb").redirectsTemporary();
+    var redirectUrl = HttpAsserter.assertThat(HTTPS + DOMAIN + "permalink/8.0/axonivy-engine.deb").redirectsTemporary();
+    assertThat(redirectUrl).matches("https:\\/\\/download\\.axonivy\\.com\\/8\\.0\\.\\d+\\/axonivy-engine-8_8\\.0\\..*deb");
   }
 
   @Test
