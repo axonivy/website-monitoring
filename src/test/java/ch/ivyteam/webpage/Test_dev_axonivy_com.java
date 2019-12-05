@@ -24,7 +24,7 @@ public class Test_dev_axonivy_com
   @Test
   public void checkDeadlinks_onHomepage()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN ).hasNoDeadLinks();
+    HttpAsserter.assertThat(HTTPS + DOMAIN).hasNoDeadLinks();
   }
 
   @Test
@@ -36,19 +36,13 @@ public class Test_dev_axonivy_com
   @Test
   public void checkDeadlinks_permalinkDebianPackage()
   {
-    HttpAsserter.assertThat("https://developer.axonivy.com/permalink/8.0/axonivy-engine.deb").exists();
+    HttpAsserter.assertThat(HTTPS + DOMAIN + "permalink/8.0/axonivy-engine.deb").redirectsTemporary();
   }
 
   @Test
   public void checkDeadlinks_onDownloadPage()
   {
     HttpAsserter.assertThat(HTTPS + DOMAIN + "download").hasNoDeadLinks();
-  }
-
-  @Test
-  public void checkDeadlinks_onAddonsPage()
-  {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "download/addons").hasNoDeadLinks();
   }
 
   @Test

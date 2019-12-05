@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'maven:3.5.3-jdk-10'
+      image 'maven:3.6.3-jdk-11'
     }
   }
   triggers {
