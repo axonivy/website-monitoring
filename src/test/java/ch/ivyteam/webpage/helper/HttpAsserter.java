@@ -123,6 +123,7 @@ public class HttpAsserter
     private static final Set<String> DO_NOT_CHECK_LINKS_WHICH_CONTAINS = Set.of(
     		"PublicAPI",
     		"primefaces.org",
+    		"jira.axonivy.com",
     		"ch.linkedin.com");
     private static final Set<String> DO_NOT_CHECK_LINK_WHICH_STARTS_WITH = Set.of(
     		"mailto",
