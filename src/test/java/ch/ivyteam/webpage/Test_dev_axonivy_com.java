@@ -18,9 +18,9 @@ class Test_dev_axonivy_com
   }
   
   @Test
-  void checkStatus()
+  void apiStatus()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "status").bodyContains("phpVersion");
+    HttpAsserter.assertThat(HTTPS + DOMAIN + "api/status").bodyContains("phpVersion");
   }
   
   @Test
