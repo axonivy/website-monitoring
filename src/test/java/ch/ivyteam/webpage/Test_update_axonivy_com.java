@@ -1,8 +1,8 @@
 package ch.ivyteam.webpage;
 
-import org.junit.jupiter.api.Test;
+import static ch.ivyteam.webpage.helper.HttpAsserter.assertThat;
 
-import ch.ivyteam.webpage.helper.HttpAsserter;
+import org.junit.jupiter.api.Test;
 
 class Test_update_axonivy_com
 {
@@ -14,13 +14,12 @@ class Test_update_axonivy_com
   @Test
   void checkOnline_https()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContains("provides an API to get release information of the awesome");
+    assertThat(HTTPS + DOMAIN).bodyContains("provides an API to get release information of the awesome");
   }
 
   @Test
   void checkOnline_http()
   {
-    HttpAsserter.assertThat(HTTP + DOMAIN).bodyContains("provides an API to get release information of the awesome");
+    assertThat(HTTP + DOMAIN).bodyContains("provides an API to get release information of the awesome");
   }
-
 }

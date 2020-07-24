@@ -1,3 +1,5 @@
-# ivy-website-monitoring
+# Website Monitoring
 
-The goal of this project is to monitor the online components of the IvyTeam.
+ivyTeam websites monitoring.
+
+**For Code Lovers: Here you can always use the latest java ;)**

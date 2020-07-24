@@ -1,8 +1,8 @@
 package ch.ivyteam.webpage;
 
-import org.junit.jupiter.api.Test;
+import static ch.ivyteam.webpage.helper.HttpAsserter.assertThat;
 
-import ch.ivyteam.webpage.helper.HttpAsserter;
+import org.junit.jupiter.api.Test;
 
 class Test_file_axonivy_rocks
 {
@@ -10,23 +10,21 @@ class Test_file_axonivy_rocks
   private static final String HTTPS = "https://";
   private static final String DOMAIN = "file.axonivy.rocks";
 
-  
   @Test
   void checkOnline()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "/p2/").bodyContains("Axon.ivy Update Sites");
+    assertThat(HTTPS + DOMAIN + "/p2/").bodyContains("Axon.ivy Update Sites");
   }
 
   @Test
   void redirect_home()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).redirectsTemporaryTo("/p2/");
+    assertThat(HTTPS + DOMAIN).redirectsTemporaryTo("/p2/");
   }
   
   @Test
   void redirect_https()
   {
-    HttpAsserter.assertThat(HTTP + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
+    assertThat(HTTP + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
   }
-  
 }

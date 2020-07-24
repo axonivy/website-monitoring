@@ -117,8 +117,6 @@ public class HttpAsserter
         throw new RuntimeException("Could not crawl: " + url, ex);
       }
     }
-		
-
     
     private static final Set<String> DO_NOT_CHECK_LINKS_WHICH_CONTAINS = Set.of(
     		"PublicAPI",
@@ -201,20 +199,20 @@ public class HttpAsserter
       }
     }
     
-		private static boolean ignoreLink(String link) {
-			if (link.isEmpty()) {
-				return true;
-			}
-			if (DO_NOT_CHECK_LINK_WHICH_STARTS_WITH.stream().anyMatch(pattern -> link.startsWith(pattern))) {
-				return true;
-			}
-
-			if (DO_NOT_CHECK_LINKS_WHICH_CONTAINS.stream().anyMatch(pattern -> link.contains(pattern))) {
-				return true;
-			}
-
-			return false;
+	private static boolean ignoreLink(String link) {
+		if (link.isEmpty()) {
+			return true;
 		}
+		if (DO_NOT_CHECK_LINK_WHICH_STARTS_WITH.stream().anyMatch(pattern -> link.startsWith(pattern))) {
+			return true;
+		}
+
+		if (DO_NOT_CHECK_LINKS_WHICH_CONTAINS.stream().anyMatch(pattern -> link.contains(pattern))) {
+			return true;
+		}
+
+		return false;
+	}
 
     public void hasValidSitemap()
     {
@@ -230,8 +228,5 @@ public class HttpAsserter
       Set<String> failingLinks = getDeadLinks(sitemapLinks);
       Assertions.assertThat(failingLinks).as("Found dead links on " + url).isEmpty();
     }
-
-   
   }
-
 }

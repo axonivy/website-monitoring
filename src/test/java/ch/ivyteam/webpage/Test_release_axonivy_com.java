@@ -1,8 +1,8 @@
 package ch.ivyteam.webpage;
 
-import org.junit.jupiter.api.Test;
+import static ch.ivyteam.webpage.helper.HttpAsserter.assertThat;
 
-import ch.ivyteam.webpage.helper.HttpAsserter;
+import org.junit.jupiter.api.Test;
 
 class Test_release_axonivy_com
 {
@@ -14,13 +14,12 @@ class Test_release_axonivy_com
   @Test
   void checkOnline_https()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContains("Axon.ivy Digital Business Platform");
+    assertThat(HTTPS + DOMAIN).bodyContains("Axon.ivy Digital Business Platform");
   }
 
   @Test
   void checkRedirect_http()
   {
-    HttpAsserter.assertThat(HTTP + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
+    assertThat(HTTP + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
   }
-
 }

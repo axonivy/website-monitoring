@@ -1,8 +1,8 @@
 package ch.ivyteam.webpage;
 
-import org.junit.jupiter.api.Test;
+import static ch.ivyteam.webpage.helper.HttpAsserter.assertThat;
 
-import ch.ivyteam.webpage.helper.HttpAsserter;
+import org.junit.jupiter.api.Test;
 
 class Test_answers_axonivy_com
 {
@@ -15,19 +15,18 @@ class Test_answers_axonivy_com
   @Test
   void checkOnline()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContains("Ask a Question");
+    assertThat(HTTPS + DOMAIN).bodyContains("Ask a Question");
   }
 
   @Test
   void redirect_https()
   {
-    HttpAsserter.assertThat(HTTP + DOMAIN).redirectsTemporaryTo(HTTPS + DOMAIN);
+    assertThat(HTTP + DOMAIN).redirectsTemporaryTo(HTTPS + DOMAIN);
   }
 
   @Test
   void redirect_alternateDomain_http()
   {
-    HttpAsserter.assertThat(HTTP + ALTERNATE_DOMAIN).redirectsPermanentTo(HTTP + DOMAIN);
+    assertThat(HTTP + ALTERNATE_DOMAIN).redirectsPermanentTo(HTTP + DOMAIN);
   }
-  
 }

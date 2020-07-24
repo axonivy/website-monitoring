@@ -1,8 +1,8 @@
 package ch.ivyteam.webpage;
 
-import org.junit.jupiter.api.Test;
+import static ch.ivyteam.webpage.helper.HttpAsserter.assertThat;
 
-import ch.ivyteam.webpage.helper.HttpAsserter;
+import org.junit.jupiter.api.Test;
 
 class Test_license_order_axonivy_io
 {
@@ -14,13 +14,12 @@ class Test_license_order_axonivy_io
   @Test
   void checkOnline()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContains("Administration");
+    assertThat(HTTPS + DOMAIN).bodyContains("Administration");
   }
 
   @Test
   void redirect_https()
   {
-    HttpAsserter.assertThat(HTTP + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
+    assertThat(HTTP + DOMAIN).redirectsPermanentTo(HTTPS + DOMAIN + "/");
   }
-
 }

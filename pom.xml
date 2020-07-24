@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.ivyteam.webpage</groupId>
 	<artifactId>ivy-website-monitoring</artifactId>
@@ -11,7 +9,7 @@
 		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
     	<maven.compiler.target>${java.version}</maven.compiler.target>
-    	<junit.version>5.5.2</junit.version>
+    	<junit.version>5.7.0-M1</junit.version>
 	</properties>
 
 	<dependencies>
@@ -30,13 +28,13 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.14.0</version>
+			<version>3.16.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
+			<version>3.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

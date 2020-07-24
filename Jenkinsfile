@@ -19,6 +19,8 @@ pipeline {
         script {
           maven cmd: 'clean test -Dmaven.test.failure.ignore=true'
         }
+        recordIssues tools: [java()], unstableTotalAll: 1
+        recordIssues tools: [mavenConsole()], unstableTotalAll: 1
         junit 'target/surefire-reports/**/*.xml' 
       }      
     }
