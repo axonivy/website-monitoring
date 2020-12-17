@@ -108,6 +108,7 @@ public class HttpAsserter
       var request = HttpRequest.newBuilder()
               .method(method, BodyPublishers.noBody())
               .uri(URI.create(url))
+              .header("User-Agent", "Firefox/84")
               .build();
       try
       {
