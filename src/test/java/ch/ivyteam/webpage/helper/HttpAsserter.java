@@ -1,5 +1,6 @@
 package ch.ivyteam.webpage.helper;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -7,6 +8,7 @@ import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashSet;
 import java.util.Set;
@@ -79,13 +81,12 @@ public class HttpAsserter
 
     private static String getContent(String url)
     {
+      System.out.println("Crawling (GET): " + url);
+      var client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
+      var request = HttpRequest.newBuilder().uri(URI.create(url)).build();
       try
       {
-        System.out.println("Crawling (GET): " + url);
-        var client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
-        var request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-        var response = client.send(request, BodyHandlers.ofString());
-        return response.body();
+        return retryHandler(client, request, BodyHandlers.ofString()).body();
       }
       catch (Exception ex)
       {
@@ -95,27 +96,45 @@ public class HttpAsserter
 
     private static HttpResponse<Void> getResponse(String url, boolean followRedirects)
     {
+      var method = "HEAD";
+      if (url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks"))
+      {
+        method = "GET";
+      }
+      System.out.println("Crawling (" + method + " - Drop Body): " + url);
+      
+      var redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
+      var client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
+      var request = HttpRequest.newBuilder()
+              .method(method, BodyPublishers.noBody())
+              .uri(URI.create(url))
+              .build();
       try
       {
-        var method = "HEAD";
-        if (url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks"))
-        {
-          method = "GET";
-        }
-        System.out.println("Crawling (" + method + " - Drop Body): " + url);
-
-        var redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
-        var client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
-        var request = HttpRequest.newBuilder()
-                .method(method, BodyPublishers.noBody())
-                .uri(URI.create(url))
-                .build();
-        return client.send(request, BodyHandlers.discarding());
+        return retryHandler(client, request, BodyHandlers.discarding());
       }
       catch (Exception ex)
       {
         throw new RuntimeException("Could not crawl: " + url, ex);
       }
+    }
+    
+    private static <T> HttpResponse<T> retryHandler(HttpClient client, HttpRequest request, BodyHandler<T> bodyHandler)
+            throws InterruptedException
+    {
+      var retry = 3;
+      Throwable exception = null;
+      while (retry > 0)
+      try
+      {
+        return client.send(request, bodyHandler);
+      }
+      catch (IOException ex)
+      {
+        retry--;
+        exception = ex;
+      }
+      throw new RuntimeException("Failed at least 3 times: ", exception);
     }
     
     private static final Set<String> DO_NOT_CHECK_LINKS_WHICH_CONTAINS = Set.of(
