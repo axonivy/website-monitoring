@@ -14,7 +14,7 @@ class Test_dev_axonivy_com
   @Test
   void checkOnline()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContains("AXON.IVY DIGITAL BUSINESS PLATFORM");
+    HttpAsserter.assertThat(HTTPS + DOMAIN).bodyContainsIgnoreCase("ivy");
   }
   
   @Test

@@ -69,6 +69,12 @@ public class HttpAsserter
       Assertions.assertThat(content).contains(substringOfBody);
     }
 
+    public void bodyContainsIgnoreCase(String substringOfBody)
+    {
+      var content = getContent(url);
+      Assertions.assertThat(content).containsIgnoringCase(substringOfBody);
+    }
+
     private static HttpResponse<Void> getResponse(String url)
     {
     	return getResponse(url, false);
