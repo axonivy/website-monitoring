@@ -13,7 +13,7 @@ class Test_file_axonivy_rocks
   @Test
   void checkOnline()
   {
-    assertThat(HTTPS + DOMAIN + "/p2/").bodyContains("Axon.ivy Update Sites");
+    assertThat(HTTPS + DOMAIN + "/p2/").bodyContains("Update Sites");
   }
 
   @Test
