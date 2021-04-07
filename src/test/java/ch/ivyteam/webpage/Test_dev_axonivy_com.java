@@ -26,7 +26,8 @@ class Test_dev_axonivy_com
   @Test
   void apiCurrentRelease()
   {
-    HttpAsserter.assertThat(HTTPS + DOMAIN + "api/currentRelease?releaseVersion=6.0.3").bodyContains("latestReleaseVersion", "latestServiceReleaseVersion", "9.1.");
+    HttpAsserter.assertThat(HTTPS + DOMAIN + "api/currentRelease?releaseVersion=6.0.3")
+      .bodyContains("latestReleaseVersion", "latestServiceReleaseVersion");
   }
   
   @Test
