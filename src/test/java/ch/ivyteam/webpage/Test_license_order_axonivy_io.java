@@ -14,7 +14,7 @@ class Test_license_order_axonivy_io
   @Test
   void checkOnline()
   {
-    assertThat(HTTPS + DOMAIN).bodyContains("Administration");
+    assertThat(HTTPS + DOMAIN).bodyContains("New license");
   }
 
   @Test
