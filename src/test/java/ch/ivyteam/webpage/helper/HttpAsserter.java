@@ -43,7 +43,7 @@ public class HttpAsserter
     {
       assertRedirect(url, redirectUrl, 301);
     }
-    
+
     public void exists()
     {
       Assertions.assertThat(getResponse(url).statusCode()).isEqualTo(200);
@@ -79,7 +79,7 @@ public class HttpAsserter
     {
     	return getResponse(url, false);
     }
-    
+
     private static HttpResponse<Void> getResponseFollowRedirects(String url)
     {
     	return getResponse(url, true);
@@ -108,7 +108,7 @@ public class HttpAsserter
         method = "GET";
       }
       System.out.println("Crawling (" + method + " - Drop Body): " + url);
-      
+
       var redirectPolicy = followRedirects ? Redirect.ALWAYS : Redirect.NEVER;
       var client = HttpClient.newBuilder().followRedirects(redirectPolicy).build();
       var request = HttpRequest.newBuilder()
@@ -125,7 +125,7 @@ public class HttpAsserter
         throw new RuntimeException("Could not crawl: " + url, ex);
       }
     }
-    
+
     private static <T> HttpResponse<T> retryHandler(HttpClient client, HttpRequest request, BodyHandler<T> bodyHandler)
             throws InterruptedException
     {
@@ -143,41 +143,42 @@ public class HttpAsserter
       }
       throw new RuntimeException("Failed at least 3 times: ", exception);
     }
-    
+
     private static final Set<String> DO_NOT_CHECK_LINKS_WHICH_CONTAINS = Set.of(
     		"PublicAPI",
     		"primefaces.org",
     		"jira.axonivy.com",
-    		"ch.linkedin.com");
+    		"ch.linkedin.com",
+    		"portal-guide/index.html");
     private static final Set<String> DO_NOT_CHECK_LINK_WHICH_STARTS_WITH = Set.of(
     		"mailto",
     		"javascript",
     		"org.eclipse.ui.window.preferences");
-    
+
     public void hasNoDeadLinks()
     {
       assertThat(url).exists();
-      
+
       Set<String> links = parseAllLinksOfPage(url);
       Assertions.assertThat(links).isNotEmpty();
       System.out.println("Found " + links.size() + " links on page " + url);
-      
+
       Set<String> failingLinks = getDeadLinks(links);
       Assertions.assertThat(failingLinks).as("Found dead links on " + url).isEmpty();
     }
-    
+
     private static Set<String> getDeadLinks(Set<String> links)
     {
       return links.stream()
               .filter(link -> getResponseFollowRedirects(link).statusCode() != 200)
               .collect(Collectors.toSet());
     }
-    
+
     private static Set<String> parseAllLinksOfPage(String baseUrl)
     {
       final var PATTERN_TAG = Pattern.compile("(?i)<a([^>]+)>");
       final var PATTERN_LINK = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))");
-      
+
       var content = getContent(baseUrl);
       var result = new HashSet<String>();
       var matcherTag = PATTERN_TAG.matcher(content);
@@ -190,7 +191,7 @@ public class HttpAsserter
           var link = matcherLink.group(1);
           link = StringUtils.substringBetween(link, "\"", "\"");
           link = StringUtils.substringBeforeLast(link, "#");
-          
+
           if (ignoreLink(link))
           {
             continue;
@@ -211,7 +212,7 @@ public class HttpAsserter
       }
       return result;
     }
-    
+
     private static String getProtocolAndHost(String url)
     {
       try
@@ -224,7 +225,7 @@ public class HttpAsserter
         throw new RuntimeException(ex);
       }
     }
-    
+
 	private static boolean ignoreLink(String link) {
 		if (link.isEmpty()) {
 			return true;
@@ -247,10 +248,10 @@ public class HttpAsserter
       String xml = getContent(sitemapUrl);
       Set<String> sitemapLinks = SitemapParser.parseLinks(xml);
       sitemapLinks = sitemapLinks.stream().filter(l -> !ignoreLink(l)).collect(Collectors.toSet());
-      
+
       Assertions.assertThat(sitemapLinks).isNotEmpty();
       System.out.println("Found " + sitemapLinks.size() + " links sitemap " + url);
-      
+
       Set<String> failingLinks = getDeadLinks(sitemapLinks);
       Assertions.assertThat(failingLinks).as("Found dead links on " + url).isEmpty();
     }
