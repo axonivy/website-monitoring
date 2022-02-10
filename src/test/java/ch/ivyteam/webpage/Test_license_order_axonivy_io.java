@@ -14,7 +14,7 @@ class Test_license_order_axonivy_io
   @Test
   void checkOnline()
   {
-    assertThat(HTTPS + DOMAIN).bodyContains("Neue Lizenz");
+    assertThat(HTTPS + DOMAIN).bodyContains("https://license-order.axonivy.io/license-order/faces/view/license-order/businesspartner-order.xhtml");
   }
 
   @Test
