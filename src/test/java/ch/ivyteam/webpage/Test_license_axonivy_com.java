@@ -4,17 +4,17 @@ import static ch.ivyteam.webpage.helper.HttpAsserter.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class Test_license_order_axonivy_io
+class Test_license_axonivy_com
 {
   private static final String HTTP = "http://";
   private static final String HTTPS = "https://";
 
-  private static final String DOMAIN = "license-order.axonivy.io";
+  private static final String DOMAIN = "license.axonivy.com";
 
   @Test
   void checkOnline()
   {
-    assertThat(HTTPS + DOMAIN).bodyContains("https://license-order.axonivy.io/license-order/faces/view/license-order/businesspartner-order.xhtml");
+    assertThat(HTTPS + DOMAIN).bodyContains("https://license.axonivy.com/license-order/faces/view/license-order/businesspartner-order.xhtml");
   }
 
   @Test
