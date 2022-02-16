@@ -14,7 +14,7 @@ class Test_license_axonivy_com
   @Test
   void checkOnline()
   {
-    assertThat(HTTPS + DOMAIN).bodyContains("https://license.axonivy.com/license-order/faces/view/license-order/businesspartner-order.xhtml");
+    assertThat("https://license.axonivy.com/license-order/faces/view/license-order/index.xhtml").bodyContainsIgnoreCase("License Order Application");
   }
 
   @Test
