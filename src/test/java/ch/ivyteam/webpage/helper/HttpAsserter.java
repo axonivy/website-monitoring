@@ -89,7 +89,10 @@ public class HttpAsserter
     {
       System.out.println("Crawling (GET): " + url);
       var client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
-      var request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+      var request = HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .header("Accept-Language", "*")
+        .build();
       try
       {
         return retryHandler(client, request, BodyHandlers.ofString()).body();
