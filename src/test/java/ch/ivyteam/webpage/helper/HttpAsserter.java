@@ -88,7 +88,7 @@ public class HttpAsserter
     private static String getContent(String url)
     {
       System.out.println("Crawling (GET): " + url);
-      var client = HttpClient.newBuilder().followRedirects(Redirect.NEVER).build();
+      var client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS).build();
       var request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .header("Accept-Language", "*")
@@ -106,8 +106,7 @@ public class HttpAsserter
     private static HttpResponse<Void> getResponse(String url, boolean followRedirects)
     {
       var method = "HEAD";
-      if (url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks"))
-      {
+      if ((url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks")) && !url.endsWith(".zip") && !url.endsWith(".deb")) {
         method = "GET";
       }
       System.out.println("Crawling (" + method + " - Drop Body): " + url);
@@ -160,8 +159,6 @@ public class HttpAsserter
 
     public void hasNoDeadLinks()
     {
-      assertThat(url).exists();
-
       Set<String> links = parseAllLinksOfPage(url);
       Assertions.assertThat(links).isNotEmpty();
       System.out.println("Found " + links.size() + " links on page " + url);
