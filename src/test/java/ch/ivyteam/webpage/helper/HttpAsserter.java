@@ -106,7 +106,7 @@ public class HttpAsserter
     private static HttpResponse<Void> getResponse(String url, boolean followRedirects)
     {
       var method = "HEAD";
-      if ((url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks")) && !url.endsWith(".zip")) {
+      if ((url.contains("developer.axonivy.com") || url.contains("file.axonivy.rocks")) && !url.endsWith(".zip") && !url.endsWith(".deb")) {
         method = "GET";
       }
       System.out.println("Crawling (" + method + " - Drop Body): " + url);
