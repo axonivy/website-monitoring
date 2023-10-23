@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'maven:3.8.6-eclipse-temurin'
+      image 'maven:3.9.5-eclipse-temurin-21'
     }
   }
 
@@ -17,7 +17,7 @@ pipeline {
     stage('test') {
       steps {
         script {
-          maven cmd: 'clean test -Dmaven.test.failure.ignore=true'
+          maven cmd: '-Duser.home=/tmp/maven clean test -Dmaven.test.failure.ignore=true'
         }
         recordIssues tools: [java()], unstableTotalAll: 1
         recordIssues tools: [mavenConsole()], unstableTotalAll: 1
