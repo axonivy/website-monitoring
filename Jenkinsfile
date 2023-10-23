@@ -17,7 +17,7 @@ pipeline {
     stage('test') {
       steps {
         script {
-          maven cmd: 'clean test -Dmaven.test.failure.ignore=true'
+          maven cmd: '-Duser.home=/tmp/maven clean test -Dmaven.test.failure.ignore=true'
         }
         recordIssues tools: [java()], unstableTotalAll: 1
         recordIssues tools: [mavenConsole()], unstableTotalAll: 1
