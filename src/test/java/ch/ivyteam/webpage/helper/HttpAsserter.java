@@ -130,7 +130,7 @@ public class HttpAsserter {
             "ch.linkedin.com",
             "twitter.com",
             "player.vimeo.com",
-            "hub.docker.com"
+            "hub.docker.com",
             "portal-guide/index.html");
     private static final Set<String> DO_NOT_CHECK_LINK_WHICH_STARTS_WITH = Set.of(
             "mailto",
