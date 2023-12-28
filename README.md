@@ -1,3 +1,7 @@
+# Deprecate
+
+We use https://status.ivyteam.io for monitoring our public services.
+
 # Website Monitoring
 
 ivyTeam websites monitoring.
